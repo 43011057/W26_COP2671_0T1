@@ -8,9 +8,12 @@ public class Spawner : MonoBehaviour
     public GameObject jellyfishPrefab;
 
     public float spawnRate = 2f;
-    public float minX = -7f;
-    public float maxX = 7f;
-    public float spawnY = 4f;
+
+    public float minY = -4f;
+    public float maxY = -2f;
+
+    public float leftX = -9f;
+    public float rightX = 9f;
 
     void Start()
     {
@@ -43,9 +46,29 @@ public class Spawner : MonoBehaviour
             objectToSpawn = jellyfishPrefab;
         }
 
-        float randomX = Random.Range(minX, maxX);
-        Vector2 spawnPosition = new Vector2(randomX, spawnY);
+        float randomY = Random.Range(minY, maxY);
+        bool spawnFromLeft = Random.value > 0.5f;
 
-        Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
+        Vector2 spawnPosition;
+        int direction;
+
+        if (spawnFromLeft)
+        {
+            spawnPosition = new Vector2(leftX, randomY);
+            direction = 1;
+        }
+        else
+        {
+            spawnPosition = new Vector2(rightX, randomY);
+            direction = -1;
+        }
+
+        GameObject spawnedObject = Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
+
+        SidewaysMove moveScript = spawnedObject.GetComponent<SidewaysMove>();
+        if (moveScript != null)
+        {
+            moveScript.SetDirection(direction);
+        }
     }
 }
